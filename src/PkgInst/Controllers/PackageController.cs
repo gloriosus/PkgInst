@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using PkgInst.Models;
+using PkgInst.Helpers;
 
 namespace PkgInst.Controllers;
 
@@ -10,53 +13,16 @@ public class PackageController : Controller
     private readonly IConfiguration _configuration;
     private readonly string _basePath;
     private readonly string _companyName;
+    private readonly string _appPath;
+    private readonly PackageHelper _packageHelper;
 
-    public PackageController(IConfiguration configuration)
+    public PackageController(IConfiguration configuration, PackageHelper packageHelper)
     {
         _configuration = configuration;
         _basePath = _configuration["BasePath"];
         _companyName = _configuration["CompanyName"];
-    }
-
-    // TODO: move to a helper class
-    private IEnumerable<Package> GetPackages()
-    {
-        foreach (var fullPath in Directory.EnumerateDirectories(_basePath))
-        {
-            string id = new DirectoryInfo(fullPath).Name;
-            var packageInfo = GetPackageInfo(fullPath);
-            string name = packageInfo.Item1;
-            var fileInfo = new FileInfo(Path.Combine(fullPath, "installer.exe"));
-            long size = fileInfo.Length;
-            DateTime dateTimeCreated = fileInfo.LastWriteTime;
-            string parameters = packageInfo.Item2;
-            yield return new Package(id, name, $"/download?id={id}&name={name}", size, dateTimeCreated, parameters);
-        }
-    }
-
-    // TODO: move to a helper class
-    private (string, string) GetPackageInfo(string path)
-    {
-        string appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!;
-        string dateTime = DateTime.Now.ToString("yyyyMMddHHmmssfffffff");
-
-        var processInfo = new ProcessStartInfo
-        {
-            FileName = "7za",
-            Arguments = $"e \"{Path.Combine(path, "installer.exe")}\" -aoa -o\"{Path.Combine(appPath, dateTime)}\" \"{Path.Combine("pkg_1", "executable_package.kpd")}\"",
-            WindowStyle = ProcessWindowStyle.Hidden
-        };
-
-        var process = Process.Start(processInfo);
-        process?.WaitForExit();
-
-        string[] lines = System.IO.File.ReadAllLines(Path.Combine(appPath, dateTime, "executable_package.kpd"));
-        string name = lines.FirstOrDefault(x => x.StartsWith("LocalizedName="))!.Split('=')[1];
-        string parameters = string.Join('=', lines.FirstOrDefault(x => x.StartsWith("Params="))!.Split('=').Skip(1));
-
-        Directory.Delete(Path.Combine(appPath, dateTime), true);
-
-        return (string.IsNullOrWhiteSpace(name) ? "installer.exe" : name, parameters);
+        _appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? throw new DirectoryNotFoundException();
+        _packageHelper = packageHelper;
     }
 
     [Route("/")]
@@ -66,16 +32,22 @@ public class PackageController : Controller
         switch (by)
         {
             case "name":
-                ViewBag.Packages = order == "asc" ? GetPackages().OrderBy(x => x.Name) : GetPackages().OrderByDescending(x => x.Name);
+                ViewBag.Packages = order.Equals("asc") ? _packageHelper.GetPackages().OrderBy(x => x.Name) : 
+                                  (order.Equals("desc") ? _packageHelper.GetPackages().OrderByDescending(x => x.Name) : 
+                                   throw new ArgumentOutOfRangeException());
                 break;
             case "size":
-                ViewBag.Packages = order == "asc" ? GetPackages().OrderBy(x => x.Size) : GetPackages().OrderByDescending(x => x.Size);
+                ViewBag.Packages = order.Equals("asc") ? _packageHelper.GetPackages().OrderBy(x => x.Size) : 
+                                  (order.Equals("desc") ? _packageHelper.GetPackages().OrderByDescending(x => x.Size) :
+                                  throw new ArgumentOutOfRangeException());
                 break;
             case "dateTimeCreated":
-                ViewBag.Packages = order == "asc" ? GetPackages().OrderBy(x => x.DateTimeCreated) : GetPackages().OrderByDescending(x => x.DateTimeCreated);
+                ViewBag.Packages = order.Equals("asc") ? _packageHelper.GetPackages().OrderBy(x => x.DateTimeCreated) : 
+                                  (order.Equals("desc") ? _packageHelper.GetPackages().OrderByDescending(x => x.DateTimeCreated) :
+                                  throw new ArgumentOutOfRangeException());
                 break;
             default:
-                ViewBag.Packages = GetPackages().OrderBy(x => x.Name);
+                ViewBag.Packages = _packageHelper.GetPackages().OrderBy(x => x.Name);
                 break;
         }
 
@@ -84,11 +56,25 @@ public class PackageController : Controller
         return View();
     }
 
-    // TODO: make ability to download unpacked original installer
     [Route("/download")]
-    public IActionResult Download(string id, string name)
+    public IActionResult Download(string id, string name, bool original = false)
     {
-        var bytes = System.IO.File.ReadAllBytes(Path.Combine(_basePath, id, "installer.exe"));
-        return File(bytes, "application/vnd.microsoft.portable-executable", name);
+        if (original)
+        {
+            string tempPath = _packageHelper.ExtractPackage(id, Path.Combine("pkg_1", "exec", "*.*"));
+
+            var originalFileStream = new DirectoryInfo(tempPath).GetFiles().First(x => !x.Name.Equals("executable_package.kpd")).OpenRead();
+
+            Task.Run(() => 
+            { 
+                Thread.Sleep(10000); 
+                Directory.Delete(tempPath, true); 
+            });
+
+            return File(originalFileStream, "application/octet-stream", name);
+        }
+
+        var fileStream = System.IO.File.OpenRead(Path.Combine(_basePath, id, "installer.exe"));
+        return File(fileStream, "application/octet-stream", name);
     }
 }

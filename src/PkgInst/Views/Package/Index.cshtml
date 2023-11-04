@@ -6,6 +6,7 @@
             <th scope="col">Размер, МБ</th>
             <th scope="col">Дата создания</th>
             <th scope="col">Параметры</th>
+            <th scope="col">Исходный файл</th>
         </tr>
     </thead>
     <tbody>
@@ -19,6 +20,7 @@
                     <td>@Math.Floor(package.Size / 1048576d)</td>
                     <td>@package.DateTimeCreated.ToString("dd.MM.yyyy HH:mm:ss")</td>
                     <td>@package.Parameters</td>
+                    <td><a href="@package.Url&original=true">Извлечь</a></td>
                 </tr>
                 i++;
             }

@@ -1,6 +1,10 @@
+using PkgInst.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<PackageHelper, PackageHelper>();
 
 var app = builder.Build();
 
