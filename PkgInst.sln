@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{00D9970B-A707-4A83-8421-61E3A7B3EC7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkgInst", "src\PkgInst\PkgInst.csproj", "{CDA0673F-0A23-46F7-8B19-A217E0792571}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deps", "deps", "{ECA02AF3-8B11-4C38-AA4A-6C33BC7FBB6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "win-x64", "win-x64", "{BBCCB8CF-AA68-4688-B13B-E62C1DAFD9C0}"
+	ProjectSection(SolutionItems) = preProject
+		deps\win-x64\7za.exe = deps\win-x64\7za.exe
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "linux-x64", "linux-x64", "{1CA529DE-3C92-4E8A-BAA1-B4D154197666}"
+	ProjectSection(SolutionItems) = preProject
+		deps\linux-x64\7zz = deps\linux-x64\7zz
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0CB6BB2-F2CF-4CBE-86CA-173C3A4100F0}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDA0673F-0A23-46F7-8B19-A217E0792571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDA0673F-0A23-46F7-8B19-A217E0792571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDA0673F-0A23-46F7-8B19-A217E0792571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDA0673F-0A23-46F7-8B19-A217E0792571}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CDA0673F-0A23-46F7-8B19-A217E0792571} = {00D9970B-A707-4A83-8421-61E3A7B3EC7D}
+		{BBCCB8CF-AA68-4688-B13B-E62C1DAFD9C0} = {ECA02AF3-8B11-4C38-AA4A-6C33BC7FBB6A}
+		{1CA529DE-3C92-4E8A-BAA1-B4D154197666} = {ECA02AF3-8B11-4C38-AA4A-6C33BC7FBB6A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {079D1E26-98FE-4B87-BD39-FA794FC17637}
+	EndGlobalSection
+EndGlobal

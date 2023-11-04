@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  
+  <ItemGroup>
+	<ContentWithTargetPath Include="..\..\deps\win-x64\7za.exe" Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<TargetPath>7za.exe</TargetPath>
+	</ContentWithTargetPath>
+  </ItemGroup>
+  
+  <ItemGroup>
+	<ContentWithTargetPath Include="..\..\deps\linux-x64\7zz" Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<TargetPath>7zz</TargetPath>
+	</ContentWithTargetPath>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,27 @@
+﻿<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><a href="/sort?by=name&order=desc">Наименование пакета</a></th>
+            <th scope="col">Размер, МБ</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Параметры</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+            foreach (var package in ViewBag.Packages)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td><a href="@package.Url">@package.Name</a></td>
+                    <td>@Math.Floor(package.Size / 1048576d)</td>
+                    <td>@package.DateTimeCreated.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                    <td>@package.Parameters</td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
