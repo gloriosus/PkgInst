@@ -18,15 +18,20 @@ public class PackageHelper
     }
 
     // TODO: try to make the GetPackage method execute in parallel
-    // TODO: add the file size restriction, do not collect files more than 1 GB
     public IEnumerable<Package> GetPackages()
     {
         foreach (var packageId in new DirectoryInfo(_basePath).GetDirectories().Select(x => x.Name))
         {
             var packageInfo = GetPackageInfo(packageId);
             var fileInfo = new FileInfo(Path.Combine(_basePath, packageId, "installer.exe"));
-            // TODO: consider to pass readable variable names to the constructor of the Package class
-            yield return new Package(packageId, packageInfo.Item1, $"/download?id={packageId}&name={packageInfo.Item1}", fileInfo.Length, fileInfo.LastWriteTime, packageInfo.Item2);
+
+            string name = packageInfo.Item1;
+            string url = $"/download?id={packageId}&name={name}";
+            long size = fileInfo.Length;
+            DateTime dateTimeCreated = fileInfo.LastWriteTime;
+            string parameters = packageInfo.Item2;
+
+            yield return new Package(packageId, name, url, size, dateTimeCreated, parameters);
         }
     }
 
