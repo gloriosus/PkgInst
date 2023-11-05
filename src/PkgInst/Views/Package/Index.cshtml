@@ -2,15 +2,25 @@
     <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col"><a href="/sort?by=name&order=desc">Наименование пакета</a></th>
-            <th scope="col">Размер, МБ</th>
-            <th scope="col">Дата создания</th>
+            <th scope="col">
+                <a href="/sort?by=name&order=@(ViewBag.SortBy.Equals("name") & ViewBag.SortOrder.Equals("asc") ? "desc" : "asc")">Наименование пакета</a>
+                @(ViewBag.SortBy.Equals("name") ? (ViewBag.SortOrder.Equals("asc") ? "\u0020\u2191" : "\u0020\u2193") : string.Empty)
+            </th>
+            <th scope="col">
+                <a href="/sort?by=size&order=@(ViewBag.SortBy.Equals("size") & ViewBag.SortOrder.Equals("asc") ? "desc" : "asc")">Размер, МБ</a>
+                @(ViewBag.SortBy.Equals("size") ? (ViewBag.SortOrder.Equals("asc") ? "\u0020\u2191" : "\u0020\u2193") : string.Empty)
+            </th>
+            <th scope="col">
+                <a href="/sort?by=dateTimeCreated&order=@(ViewBag.SortBy.Equals("dateTimeCreated") & ViewBag.SortOrder.Equals("asc") ? "desc" : "asc")">Дата создания</a>
+                @(ViewBag.SortBy.Equals("dateTimeCreated") ? (ViewBag.SortOrder.Equals("asc") ? "\u0020\u2191" : "\u0020\u2193") : string.Empty)
+            </th>
             <th scope="col">Параметры</th>
             <th scope="col">Исходный файл</th>
         </tr>
     </thead>
     <tbody>
         @{
+            // TODO: move the number of the row to the model
             int i = 1;
             foreach (var package in ViewBag.Packages)
             {

@@ -8,6 +8,7 @@ using PkgInst.Helpers;
 
 namespace PkgInst.Controllers;
 
+// TODO: add logging and error handling
 public class PackageController : Controller
 {
     private readonly IConfiguration _configuration;
@@ -51,6 +52,9 @@ public class PackageController : Controller
                 break;
         }
 
+        ViewBag.SortBy = by;
+        ViewBag.SortOrder = order;
+
         ViewData["CompanyName"] = _companyName;
 
         return View();
@@ -61,6 +65,7 @@ public class PackageController : Controller
     {
         if (original)
         {
+            // TODO: make sure that there are always only two items extracted otherwise change "*.*"
             string tempPath = _packageHelper.ExtractPackage(id, Path.Combine("pkg_1", "exec", "*.*"));
 
             var originalFileStream = new DirectoryInfo(tempPath).GetFiles().First(x => !x.Name.Equals("executable_package.kpd")).OpenRead();
