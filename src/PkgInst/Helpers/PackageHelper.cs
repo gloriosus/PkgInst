@@ -17,12 +17,15 @@ public class PackageHelper
         _appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? throw new DirectoryNotFoundException();
     }
 
+    // TODO: try to make the GetPackage method execute in parallel
+    // TODO: add the file size restriction, do not collect files more than 1 GB
     public IEnumerable<Package> GetPackages()
     {
         foreach (var packageId in new DirectoryInfo(_basePath).GetDirectories().Select(x => x.Name))
         {
             var packageInfo = GetPackageInfo(packageId);
             var fileInfo = new FileInfo(Path.Combine(_basePath, packageId, "installer.exe"));
+            // TODO: consider to pass readable variable names to the constructor of the Package class
             yield return new Package(packageId, packageInfo.Item1, $"/download?id={packageId}&name={packageInfo.Item1}", fileInfo.Length, fileInfo.LastWriteTime, packageInfo.Item2);
         }
     }
@@ -48,7 +51,11 @@ public class PackageHelper
 
         var processInfo = new ProcessStartInfo
         {
+        #if Linux
+            FileName = "7zz",
+        #else
             FileName = "7za",
+        #endif
             Arguments = $"e \"{packagePath}\" -aoa -o\"{tempPath}\" \"{nameToExtract}\"",
             WindowStyle = ProcessWindowStyle.Hidden
         };

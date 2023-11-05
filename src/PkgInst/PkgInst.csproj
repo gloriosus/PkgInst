@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+	
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+	<DefineConstants>Linux</DefineConstants>
+  </PropertyGroup>
   
   <ItemGroup>
 	<ContentWithTargetPath Include="..\..\deps\win-x64\7za.exe" Condition="'$(RuntimeIdentifier)' == 'win-x64'">
