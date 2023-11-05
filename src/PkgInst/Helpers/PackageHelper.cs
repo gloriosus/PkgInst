@@ -1,4 +1,5 @@
 ﻿using PkgInst.Models;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -19,7 +20,7 @@ public class PackageHelper
 
     public IEnumerable<Package> GetPackages()
     {
-        var list = new List<Package>();
+        var list = new ConcurrentBag<Package>();
 
         Parallel.ForEach(new DirectoryInfo(_basePath).GetDirectories().Select(x => x.Name), packageId => 
         {
