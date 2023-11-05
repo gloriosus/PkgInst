@@ -16,14 +16,18 @@ public class PackageController : Controller
     private readonly string _companyName;
     private readonly string _appPath;
     private readonly PackageHelper _packageHelper;
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly ILogger<PackageController> _logger;
 
-    public PackageController(IConfiguration configuration, PackageHelper packageHelper)
+    public PackageController(IConfiguration configuration, PackageHelper packageHelper, IHttpContextAccessor contextAccessor, ILogger<PackageController> logger)
     {
         _configuration = configuration;
         _basePath = _configuration["BasePath"];
         _companyName = _configuration["CompanyName"];
         _appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? throw new DirectoryNotFoundException();
         _packageHelper = packageHelper;
+        _contextAccessor = contextAccessor;
+        _logger = logger;
     }
 
     [Route("/")]
@@ -63,6 +67,9 @@ public class PackageController : Controller
     [Route("/download")]
     public IActionResult Download(string id, string name, bool original = false)
     {
+        var ip = _contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString();
+        _logger.LogInformation("A client with the IP address {IpAddress} downloaded the package {PackageName}", ip, name);
+
         if (original)
         {
             // TODO: make sure that there are always only two items extracted otherwise change "*.*"
