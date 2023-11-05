@@ -17,10 +17,11 @@ public class PackageHelper
         _appPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? throw new DirectoryNotFoundException();
     }
 
-    // TODO: try to make the GetPackage method execute in parallel
     public IEnumerable<Package> GetPackages()
     {
-        foreach (var packageId in new DirectoryInfo(_basePath).GetDirectories().Select(x => x.Name))
+        var list = new List<Package>();
+
+        Parallel.ForEach(new DirectoryInfo(_basePath).GetDirectories().Select(x => x.Name), packageId => 
         {
             var packageInfo = GetPackageInfo(packageId);
             var fileInfo = new FileInfo(Path.Combine(_basePath, packageId, "installer.exe"));
@@ -31,8 +32,10 @@ public class PackageHelper
             DateTime dateTimeCreated = fileInfo.LastWriteTime;
             string parameters = packageInfo.Item2;
 
-            yield return new Package(packageId, name, url, size, dateTimeCreated, parameters);
-        }
+            list.Add(new Package(packageId, name, url, size, dateTimeCreated, parameters));
+        });
+
+        return list;
     }
 
     public (string, string) GetPackageInfo(string packageId)
