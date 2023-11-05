@@ -32,3 +32,11 @@ body {
     white-space: nowrap;
     line-height: 60px;
 }
+
+th a {
+    color: black;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: from-font;
+    text-underline-offset: 2px;
+}
