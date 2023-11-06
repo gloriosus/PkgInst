@@ -43,7 +43,7 @@ public class PackageHelper
     {
         string tempPath = ExtractPackage(packageId, Path.Combine("pkg_1", "executable_package.kpd"));
 
-        string[] lines = File.ReadAllLines(Path.Combine(tempPath, "executable_package.kpd"));
+        string[] lines = File.ReadAllLines(Path.Combine(tempPath, "pkg_1", "executable_package.kpd"));
         string name = lines.FirstOrDefault(x => x.StartsWith("LocalizedName="))!.Split('=')[1];
         string parameters = string.Join('=', lines.FirstOrDefault(x => x.StartsWith("Params="))!.Split('=').Skip(1));
 
@@ -65,7 +65,7 @@ public class PackageHelper
         #else
             FileName = "7za",
         #endif
-            Arguments = $"e \"{packagePath}\" -aoa -o\"{tempPath}\" \"{nameToExtract}\"",
+            Arguments = $"x \"{packagePath}\" -aoa -o\"{tempPath}\" \"{nameToExtract}\"",
             WindowStyle = ProcessWindowStyle.Hidden
         };
 

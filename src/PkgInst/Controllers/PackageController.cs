@@ -1,9 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using PkgInst.Models;
 using PkgInst.Helpers;
 
 namespace PkgInst.Controllers;
@@ -72,21 +69,54 @@ public class PackageController : Controller
 
         if (original)
         {
-            // TODO: make sure that there are always only two items extracted otherwise change "*.*"
-            string tempPath = _packageHelper.ExtractPackage(id, Path.Combine("pkg_1", "exec", "*.*"));
+            string tempPath = _packageHelper.ExtractPackage(id, Path.Combine("pkg_1", "exec"));
 
-            var originalFileStream = new DirectoryInfo(tempPath).GetFiles().First(x => !x.Name.Equals("executable_package.kpd")).OpenRead();
+            var itemPaths = new DirectoryInfo(Path.Combine(tempPath, "pkg_1", "exec"))
+                .EnumerateFiles(string.Empty, SearchOption.TopDirectoryOnly)
+                .Where(x => !x.Name.Equals("executable_package.kpd"))
+                .Select(x => x.FullName)
+                .Concat(
+                    new DirectoryInfo(Path.Combine(tempPath, "pkg_1", "exec"))
+                    .EnumerateDirectories(string.Empty, SearchOption.TopDirectoryOnly)
+                    .Select(x => x.FullName)
+                );
 
-            Task.Run(() => 
-            { 
-                Thread.Sleep(10000); 
-                Directory.Delete(tempPath, true); 
+            var originalFileStream = itemPaths.Count() == 1 ? 
+                new FileInfo(itemPaths.First()).OpenRead() : 
+                GetNewArchive(Path.Combine(tempPath, $"{name}.zip"), itemPaths);
+
+            Task.Run(() =>
+            {
+                Thread.Sleep(10000);
+                Directory.Delete(tempPath, true);
             });
 
-            return File(originalFileStream, "application/octet-stream", name);
+            return File(originalFileStream, "application/octet-stream", itemPaths.Count() == 1 ? name : $"{name}.zip");
         }
 
         var fileStream = System.IO.File.OpenRead(Path.Combine(_basePath, id, "installer.exe"));
         return File(fileStream, "application/octet-stream", name);
+    }
+
+    private FileStream GetNewArchive(string archivePath, IEnumerable<string> paths)
+    {
+        foreach (var path in paths)
+        {
+            var processInfo = new ProcessStartInfo
+            {
+            #if Linux
+                FileName = "7zz",
+            #else
+                FileName = "7za",
+            #endif
+                Arguments = $"a \"{archivePath}\" \"{path}\"",
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+
+            var process = Process.Start(processInfo);
+            process?.WaitForExit();
+        }
+
+        return System.IO.File.OpenRead(archivePath);
     }
 }
