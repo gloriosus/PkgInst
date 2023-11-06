@@ -1,0 +1,96 @@
+// AfterActualRun
+WorkloadResult   1: 5 op, 549187500.00 ns, 109.8375 ms/op
+WorkloadResult   2: 5 op, 548852300.00 ns, 109.7705 ms/op
+WorkloadResult   3: 5 op, 544278800.00 ns, 108.8558 ms/op
+WorkloadResult   4: 5 op, 552811600.00 ns, 110.5623 ms/op
+WorkloadResult   5: 5 op, 543409400.00 ns, 108.6819 ms/op
+WorkloadResult   6: 5 op, 548630800.00 ns, 109.7262 ms/op
+WorkloadResult   7: 5 op, 587571300.00 ns, 117.5143 ms/op
+WorkloadResult   8: 5 op, 570630900.00 ns, 114.1262 ms/op
+WorkloadResult   9: 5 op, 568356700.00 ns, 113.6713 ms/op
+WorkloadResult  10: 5 op, 567282200.00 ns, 113.4564 ms/op
+WorkloadResult  11: 5 op, 560209100.00 ns, 112.0418 ms/op
+WorkloadResult  12: 5 op, 562235600.00 ns, 112.4471 ms/op
+WorkloadResult  13: 5 op, 560000200.00 ns, 112.0000 ms/op
+WorkloadResult  14: 5 op, 556469300.00 ns, 111.2939 ms/op
+WorkloadResult  15: 5 op, 556979400.00 ns, 111.3959 ms/op
+WorkloadResult  16: 5 op, 545100500.00 ns, 109.0201 ms/op
+WorkloadResult  17: 5 op, 583633600.00 ns, 116.7267 ms/op
+WorkloadResult  18: 5 op, 569398200.00 ns, 113.8796 ms/op
+WorkloadResult  19: 5 op, 555164900.00 ns, 111.0330 ms/op
+WorkloadResult  20: 5 op, 552025700.00 ns, 110.4051 ms/op
+
+// AfterAll
+// Benchmark Process 18468 has exited with code 0.
+
+Mean = 111.822 ms, StdErr = 0.553 ms (0.49%), N = 20, StdDev = 2.474 ms
+Min = 108.682 ms, Q1 = 109.821 ms, Median = 111.345 ms, Q3 = 113.510 ms, Max = 117.514 ms
+IQR = 3.689 ms, LowerFence = 104.287 ms, UpperFence = 119.044 ms
+ConfidenceInterval = [109.674 ms; 113.971 ms] (CI 99.9%), Margin = 2.148 ms (1.92% of Mean)
+Skewness = 0.74, Kurtosis = 2.66, MValue = 2
+
+// ** Remained 0 (0,0 %) benchmark(s) to run. Estimated finish 2023-11-06 15:44 (0h 0m from now) **
+Successfully reverted power plan (GUID: 381b4222-f694-41f0-9685-ff5bb260df2e FriendlyName: Сбалансированная)
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts\results\PkgInst.Benchmark.PackageHelperBenchmark-report.csv
+  BenchmarkDotNet.Artifacts\results\PkgInst.Benchmark.PackageHelperBenchmark-report-github.md
+  BenchmarkDotNet.Artifacts\results\PkgInst.Benchmark.PackageHelperBenchmark-report.html
+
+// * Detailed results *
+PackageHelperBenchmark.GetPackages: DefaultJob
+Runtime = .NET 6.0.24 (6.0.2423.51814), X64 RyuJIT AVX2; GC = Concurrent Workstation
+Mean = 412.037 ms, StdErr = 0.679 ms (0.16%), N = 15, StdDev = 2.630 ms
+Min = 408.522 ms, Q1 = 409.703 ms, Median = 411.787 ms, Q3 = 413.994 ms, Max = 417.406 ms
+IQR = 4.291 ms, LowerFence = 403.267 ms, UpperFence = 420.430 ms
+ConfidenceInterval = [409.225 ms; 414.849 ms] (CI 99.9%), Margin = 2.812 ms (0.68% of Mean)
+Skewness = 0.23, Kurtosis = 1.94, MValue = 2
+-------------------- Histogram --------------------
+[407.122 ms ; 418.806 ms) | @@@@@@@@@@@@@@@
+---------------------------------------------------
+
+PackageHelperBenchmark.GetPackagesInParallel: DefaultJob
+Runtime = .NET 6.0.24 (6.0.2423.51814), X64 RyuJIT AVX2; GC = Concurrent Workstation
+Mean = 111.822 ms, StdErr = 0.553 ms (0.49%), N = 20, StdDev = 2.474 ms
+Min = 108.682 ms, Q1 = 109.821 ms, Median = 111.345 ms, Q3 = 113.510 ms, Max = 117.514 ms
+IQR = 3.689 ms, LowerFence = 104.287 ms, UpperFence = 119.044 ms
+ConfidenceInterval = [109.674 ms; 113.971 ms] (CI 99.9%), Margin = 2.148 ms (1.92% of Mean)
+Skewness = 0.74, Kurtosis = 2.66, MValue = 2
+-------------------- Histogram --------------------
+[107.486 ms ; 109.688 ms) | @@@
+[109.688 ms ; 112.080 ms) | @@@@@@@@@@
+[112.080 ms ; 115.924 ms) | @@@@@
+[115.924 ms ; 118.710 ms) | @@
+---------------------------------------------------
+
+// * Summary *
+
+BenchmarkDotNet v0.13.10, Windows 10 (10.0.19045.3570/22H2/2022Update)
+Intel Core i7-8700K CPU 3.70GHz (Coffee Lake), 1 CPU, 12 logical and 6 physical cores
+.NET SDK 7.0.403
+  [Host]     : .NET 6.0.24 (6.0.2423.51814), X64 RyuJIT AVX2 [AttachedDebugger]
+  DefaultJob : .NET 6.0.24 (6.0.2423.51814), X64 RyuJIT AVX2
+
+
+| Method                | Mean     | Error   | StdDev  |
+|---------------------- |---------:|--------:|--------:|
+| GetPackages           | 412.0 ms | 2.81 ms | 2.63 ms |
+| GetPackagesInParallel | 111.8 ms | 2.15 ms | 2.47 ms |
+
+// * Warnings *
+Environment
+  Summary -> Benchmark was executed with attached debugger
+
+// * Legends *
+  Mean   : Arithmetic mean of all measurements
+  Error  : Half of 99.9% confidence interval
+  StdDev : Standard deviation of all measurements
+  1 ms   : 1 Millisecond (0.001 sec)
+
+// ***** BenchmarkRunner: End *****
+Run time: 00:00:27 (27.55 sec), executed benchmarks: 2
+
+Global total time: 00:00:44 (44.45 sec), executed benchmarks: 2
+// * Artifacts cleanup *
+Artifacts cleanup is finished
