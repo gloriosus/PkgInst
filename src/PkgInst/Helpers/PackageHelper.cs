@@ -7,6 +7,9 @@ namespace PkgInst.Helpers;
 
 public class PackageHelper
 {
+    private const char WHITESPACE = ' ';
+    private const char EQUALS = '=';
+
     private readonly IConfiguration _configuration;
     private readonly string _basePath;
     private readonly string _appPath;
@@ -44,8 +47,20 @@ public class PackageHelper
         string tempPath = ExtractPackage(packageId, Path.Combine("pkg_1", "executable_package.kpd"));
 
         string[] lines = File.ReadAllLines(Path.Combine(tempPath, "pkg_1", "executable_package.kpd"));
-        string name = lines.FirstOrDefault(x => x.StartsWith("LocalizedName="))!.Split('=')[1];
-        string parameters = string.Join('=', lines.FirstOrDefault(x => x.StartsWith("Params="))!.Split('=').Skip(1));
+
+        string name = Path.ChangeExtension(
+            string.Join(
+                WHITESPACE, 
+                lines.FirstOrDefault(x => x.StartsWith("LocalizedName="), "installer.exe")
+                     .Split(EQUALS)
+                     .Skip(1)).Trim(), 
+            "exe");
+
+        string parameters = string.Join(
+            EQUALS, 
+            lines.FirstOrDefault(x => x.StartsWith("Params="), string.Empty)
+                 .Split(EQUALS)
+                 .Skip(1)).Trim();
 
         Directory.Delete(tempPath, true);
 
