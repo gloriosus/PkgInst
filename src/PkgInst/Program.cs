@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using PkgInst.Helpers;
 
@@ -14,6 +15,10 @@ var app = builder.Build();
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseForwardedHeaders(new ForwardedHeadersOptions()
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.MapControllerRoute(
     name: "default",
